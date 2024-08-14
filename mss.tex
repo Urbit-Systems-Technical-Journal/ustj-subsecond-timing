@@ -76,7 +76,7 @@ Subsecond decimal time does not cleanly map to this representation, and the resu
 \noindent
 Smaller intervals of a second than $2^{-64}$ cannot be represented in native Urbit time relative time \lstinline[style=inlinecode]{@dr}.
 
-Urbit time can therefore be more exactly expressed in terms of binary fractions of a second rather than decimal fractions of a second.  However, while there are established expressions for powers of two that are close to positive powers of ten, there are no expressions for powers of two close to negative powers of ten.  We would like to introduce such a scheme for convenience in Urbit time.
+Urbit time can therefore be more exactly expressed in terms of binary fractions of a second rather than decimal fractions of a second.  However, while \textsc{iec} 80000-13 codified expressions for powers of two that are close to positive powers of ten, there are no expressions for powers of two close to negative powers of ten.  We would like to introduce such a scheme for convenience in Urbit time.
 
 \begin{tabularx}{\textwidth}{ll}
   \textbf{Binary Value} & \textbf{Hexadecimal Value} \\
