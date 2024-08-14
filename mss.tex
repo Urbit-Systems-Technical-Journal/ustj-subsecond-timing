@@ -4,9 +4,9 @@
 
 \addbibresource{mss.bib}
 
-\newcommand{\authorname}{Ernest P. Worrell}
-\newcommand{\authorpatp}{\patp{sampel-palnet}}
-\newcommand{\affiliation}{Kamp Kikakee}
+\newcommand{\authorname}{N. E. Davis}
+\newcommand{\authorpatp}{\patp{lagrev-nocfep}}
+\newcommand{\affiliation}{Urbit Foundation}
 
 %  Make first page footer:
 \fancypagestyle{firststyle}{%
@@ -23,11 +23,11 @@
 %  Arrange subsequent pages:
 \fancyhf{}
 \fancyhead[LE]{{\urbitfont Urbit Systems Technical Journal}}
-\fancyhead[RO]{Floating-Point Arithmetic on Deterministic Systems}
+\fancyhead[RO]{Subsecond Intervals}
 \fancyfoot[LE,RO]{\thepage}
 
 %%MANUSCRIPT
-\title{Ernest Goes to Mars:  An Enquiry into the Foundations of Artificial Stupidity}
+\title{A Note on Subsecond Base-2 Time Intervals}
 \author{\authorname~\authorpatp \\ \affiliation}
 \date{}
 
@@ -37,81 +37,90 @@
 \thispagestyle{firststyle}
 
 \begin{abstract}
-In this groundbreaking paper, we embark on a cosmic journey with the renowned character Ernest P. Worrell as he ventures into the unexplored realm of Martian computing. Drawing inspiration from Ernest's comically ingenious encounters with everyday challenges, we investigate the foundations of what we term "Artificial Stupidity." As Ernest grapples with Martian technology, we delve into the intricacies of programming errors, algorithmic missteps, and the curious phenomena that arise when human-like intelligence meets extraterrestrial computing systems. Our analysis sheds light on the unexpected intersections between humor, artificial intelligence, and the cosmic absurdity of Martian software. Join us in this interplanetary exploration as we unravel the mysteries of Artificial Stupidity through the lens of Ernest's interstellar escapades.
+Urbit time provides for the representation of subsecond values down to $2^{-64}$ s.  Such a base-two numbering system prompts the consideration of prefixes for subsecond intervals that are analogous to the SI prefixes for positive powers of two, as used in memory sizes.  We propose a set of prefixes for subsecond intervals that are similar to the SI prefixes for negative powers of ten, and we suggest that these prefixes be used in Urbit time representations.  We also discuss the relative error in these prefixes compared to the SI prefixes for negative powers of ten.
 \end{abstract}
 
 % We will adjust page numbering in final editing.
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
-\tableofcontents
+Urbit time is conventionally a 128-bit value,\footnote{Time can actually be an arbitrarily sized atom, but $2^{64} \,\textrm{s} \approx 58 \times 10^{9} \,\textrm{a}$; most discussions of noncosmological time will not involve such large intervals.} with the lower 64 bits denoting fractions of a second and the upper 64 bits denoting multiples of a second.  (That is, 1 s = \lstinline[style=inlinecode]{0x1.0000.0000.0000.0000}).
 
-\section{Introduction}
+By expanding the atomic form of time (\lstinline[style=inlinecode]{@dr}) to the tuple form, we can clearly see how each component of the time is represented:
 
-Introduce the scope of your article and investigation.
+\begin{lstlisting}[style=listingcode]
+> `@da`now
+~2024.8.14..14.48.13..e5ea
 
-\section{Background and Literature}
-
-Exposite the relevant background and literature.
-
-\begin{enumerate}
-  \item  Prefer to \texttt{enumerate}.
-  \item  It is easier to refer to than \texttt{itemize}.
-\end{enumerate}
-
-\noindent
-Mark \texttt{\textbackslash noindent} in paragraphs that continue the thought of an \texttt{\textbackslash enumerate} block.
-
-\section{Urbit's Implementation}
-
-Oftentimes you will then turn to exploring how Urbit or closely related systems like Nockchain have approached or considered a problem.  You can look at a PR like \citetpr{urbit_urbit_6891}.
-
-\lstset{language=C}
-\begin{lstlisting}
-#include <stdio.h>
-
-double compute(float a, float b) {
-    return a * a + b * b;
-}
-
-int main() {
-    float x = 2.5;
-    float y = 3.7;
-
-    double result = compute(x, y);
-
-    printf("Result: %lf\n", result);
-
-    return 0;
-}
+> (yore `@da`now)
+[[a=%.y y=2.024] m=8 t=[d=14 h=14 m=48 s=13 f=~[0xe5ea]]]
 \end{lstlisting}
 
+The last component of the tuple is a list of subsecond time intervals; while \lstinline[style=inlinecode]{now} does not feign to provide more accuracy than $2^{-16} \,\textrm{s}$, the underlying representation can provide for subsecond intervals down to $2^{-64} \,\textrm{s}$ by including more values in the \texttt{f} list.
+
+Decimal time does not cleanly map to this representation, and the resulting hexadecimal values are largely opaque to human interpretation:
+
+\begin{itemize}
+  \item $1 \,\textrm{ms} = 10^{-3} \,\textrm{s} = \mathtt{0x41.8937.4bc6.a7ef}$
+  \item $1 \,\textrm{\mu s} = 10^{-6} \,\textrm{s} = \mathtt{0x10c6.f7a0.b5ed}$
+  \item $1 \,\textrm{ns} = 10^{-9} \,\textrm{s} = \mathtt{0x4.4b82.fa09}$
+  \item $1 \,\textrm{ps} = 10^{-12} \,\textrm{s} = \mathtt{0x119.7998}$
+  \item $1 \,\textrm{fs} = 10^{-15} \,\textrm{s} = \mathtt{0x480e}$
+  \item $1 \,\textrm{as} = 10^{-18} \,\textrm{s} = \mathtt{0x12}$
+\end{itemize}
+
 \noindent
-That code snippet was part of the text, and not a standalone entity to which we make separate repeated reference.
+Smaller intervals of a second cannot be represented in native Urbit time relative time \lstinline[style=inlinecode]{@dr}.
 
-\begin{figure}
-  \begin{lstlisting}[language=Python, caption={Example Python Code}, label={lst:example}]
-  def hello_world():
-      print("Hello, world!")
-  \end{lstlisting}
-\end{figure}
+Urbit time can therefore be more exactly expressed in terms of binary fractions of a second rather than decimal fractions of a second.  However, while there are established expressions for powers of two that are close to positive powers of ten \citep{WikipediaByte}, there are no expressions for powers of two close to negative powers of ten.  We would like to introduce such a scheme for convenience in Urbit time.
+% WikipediaByte https://en.wikipedia.org/wiki/Byte#Multiple-byte_units
 
-Refer to the code listing: Listing~\ref{lst:example}.  (Note that we don't suppress indentation since it's a float.)
+\begin{itemize}
+  \item $2^{-10} \,\textrm{s} = \mathtt{0x40.0000.0000.0000}$
+  \item $2^{-20} \,\textrm{s} = \mathtt{0x10.0000.0000.0000}$
+  \item $2^{-30} \,\textrm{s} = \mathtt{0x4.0000.0000}$
+  \item $2^{-40} \,\textrm{s} = \mathtt{0x100.0000}$
+  \item $2^{-50} \,\textrm{s} = \mathtt{0x4000}$
+  \item $2^{-60} \,\textrm{s} = \mathtt{0x10}$
+\end{itemize}
 
+What prefixes should we provide?  The standard names for the positive values of ten are:
 
-\section{A Wild Ernest Appears}
+\begin{itemize}
+  \item $2^{10} = \textrm{kibi} \approx 10^{3}$
+  \item $2^{20} = \textrm{mebi} \approx 10^{6}$
+  \item $2^{30} = \textrm{gibi} \approx 10^{9}$
+  \item $2^{40} = \textrm{tebi} \approx 10^{12}$
+  \item $2^{50} = \textrm{pebi} \approx 10^{15}$
+  \item $2^{60} = \textrm{exbi} \approx 10^{18}$
+\end{itemize}
 
-You can have as many sections as make sense.  Only sections and subsections appear in the table of contents.
+This suggests that we should prefer prefixes that are similar to the standard names for the negative values of two but with a different last syllable.  Following a suggestion by \patp{rovyns-ricfer} for “-ki-”, we propose the following prefixes:
 
-\section{Conclusion}
+\begin{tabular}{llll}
+  \textbf{Binary Value} & \textbf{Prefix} & \textbf{Symbol} & \textbf{Decimal Approximation} \\
+  $2^{-10}$ & miki & mi & $10^{-3}$ \\
+  $2^{-20}$ & muki & ui & $10^{-6}$ \\
+  $2^{-30}$ & naki & ni & $10^{-9}$ \\
+  $2^{-40}$ & piki & pi & $10^{-12}$ \\
+  $2^{-50}$ & feki & fi & $10^{-15}$ \\
+  $2^{-60}$ & akki & ai & $10^{-18}$ \\
+\end{tabular}
 
-To summarize, why did you write it?  Why do we care?  What impact should it have on Urbit development?
+As occurs with memory values denominated in kibi, mebi, gibi, etc., it will be important to keep in mind the relative error in such time expressions.  We can compare these binary magnitudes roughly to decimal magnitudes and calculate the resulting error, much as we do with the SI prefixes for positive values of ten and two:
 
-Your bibliography is a separate BibTeX file.  We use the \texttt{plainnat} bibliography style.  You can use \texttt{natbib} citation commands like \texttt{\textbackslash citep\{wikipedia\}} for parenthesized references.  Use \texttt{\textbackslash citet\{wikipedia\}} for inline references.  You can also use \texttt{\textbackslash citeauthor\{wikipedia\}} for the principal author's name.
+\begin{tabular}{llll}
+  \textbf{Binary Value} & \textbf{Prefix} & \textbf{Decimal Approximation} & \textbf{Error} \\
+  $2^{-10}$ & miki & $10^{-3}$ & 2.4\% \\
+  $2^{-20}$ & muki & $10^{-6}$ & 4.9\% \\
+  $2^{-30}$ & naki & $10^{-9}$ & 7.4\% \\
+  $2^{-40}$ & piki & $10^{-12}$ & 9.9\% \\
+  $2^{-50}$ & feki & $10^{-15}$ & 12.6\% \\
+  $2^{-60}$ & akki & $10^{-18}$ & 12.5\% (truncation error) \\
+\end{tabular}
 
-``You can use traditional TeX---or LaTeX---representations'' \citep{Varney1987}.
+We trust that the existing ability to express subsecond intervals in Urbit time will continue to prove useful, and furthermore that the proposed prefixes will be helpful in promoting legibility and accuracy.
 
-“Or you can use fancy quotes—and symbols.”
-
+\selectlanguage{USenglish}
 \printbibliography
 \end{document}
