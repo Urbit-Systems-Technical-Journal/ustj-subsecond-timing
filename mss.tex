@@ -15,8 +15,8 @@
 \fancyhead{}
 \fancyfoot[L]{{\footnotesize
               %% We toggle between these:
-              Manuscript submitted for review.\\
-              % {\it Urbit Systems Technical Journal} I:1 (2024):  1–3. \\
+              % Manuscript submitted for review.\\
+              {\it Urbit Systems Technical Journal} I:2 (2024):  49–51. \\
               ~ \\
               Address author correspondence to \authorpatp.
               }}
@@ -43,7 +43,7 @@ Urbit time provides for the representation of subsecond values down to $2^{-64}$
 
 % We will adjust page numbering in final editing.
 \pagenumbering{arabic}
-\setcounter{page}{1}
+\setcounter{page}{49}
 
 Urbit time is conventionally a 128-bit atom,\footnote{Time can actually be an arbitrarily sized atom, but $2^{64} \,\textrm{s} \approx 58 \times 10^{9} \,\textrm{a}$; most discussions of noncosmological time will not involve such large intervals.} with the lower 64 bits denoting fractions of a second and the upper 64 bits denoting multiples of a second.  (That is, 1 s = \lstinline[style=inlinecode]{(bex 64)}.)
 
@@ -129,4 +129,5 @@ We trust that the current ability to express subsecond intervals in Urbit time w
 
 \selectlanguage{USenglish}
 \printbibliography
+\afterpage{\blankpage}
 \end{document}

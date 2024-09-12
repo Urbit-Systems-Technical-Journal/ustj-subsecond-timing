@@ -306,3 +306,11 @@
 
 \hfuzz=0.1pt % Adjust the value as needed
 \hbadness=10000 % This value disables any reporting of overfull boxes
+
+\usepackage{afterpage}
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
